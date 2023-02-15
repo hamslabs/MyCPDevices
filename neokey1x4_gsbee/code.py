@@ -4,21 +4,29 @@
 import board
 import busio
 from adafruit_neokey.neokey1x4 import NeoKey1x4
+import usb_hid
+from adafruit_hid.keyboard import Keyboard
+from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
+from adafruit_hid.keycode import Keycode
+
+
 
 # use default I2C bus
 i2c_bus = busio.I2C(board.SCL1, board.SDA1)
 
 # Create a NeoKey object
-neokey = NeoKey1x4(i2c_bus, addr=0x31)
+neokey = NeoKey1x4(i2c_bus, addr=0x30)
 
 keys_state = [False, False, False, False];
-print("Adafruit NeoKey simple test")
+
+keyboard = Keyboard(usb_hid.devices)
+keyboard_layout = KeyboardLayoutUS(keyboard)  # We're in the US :)
 
 # Check each button, if pressed, light up the matching neopixel!
 while True:
     if neokey[0]:
         if not keys_state[0]:
-            print("")
+            keyboard_layout.write("")
             neokey.pixels[0] = 0xFF0000
             keys_state[0] = True
     else:
@@ -27,7 +35,7 @@ while True:
 
     if neokey[1]:
         if not keys_state[1]:
-            print("")
+            keyboard_layout.write("")
             keys_state[1] = True
             neokey.pixels[1] = 0xFFFF00
     else:
@@ -36,7 +44,7 @@ while True:
 
     if neokey[2]:
         if not keys_state[2]:
-            print("")
+            keyboard_layout.write("")
             neokey.pixels[2] = 0x00FF00
             keys_state[2] = True
     else:
@@ -45,7 +53,7 @@ while True:
 
     if neokey[3]:
         if not keys_state[3]:
-            print("")
+            keyboard_layout.write("")
             neokey.pixels[3] = 0x00FFFF
             keys_state[3] = True
     else:
